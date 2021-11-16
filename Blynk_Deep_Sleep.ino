@@ -33,7 +33,7 @@ void loop() {
   Blynk.run();
 
   SendBlynk();
-  delay(200);
+  delay(20); 
   
 //  Serial.println("Enter Deep Sleep");
   ESP.deepSleep(30e6); 
@@ -42,8 +42,16 @@ void loop() {
 
 
 void SendBlynk(){
-  while(Blynk.connect()==0){}
+  int tm = millis();
+  while(Blynk.connect()==0){if(millis() - tm > 3000){ESP.deepSleep(30e6); }}
   int adc = analogRead(A0); 
-  Blynk.setProperty(V1,"onLabel",String(adc));
-  Blynk.setProperty(V1,"offLabel",String(adc));
-}
+  int pers = map(adc, 50, 700, 100, 0);
+  if(pers<0){pers=0;}
+  if(pers>100){pers=100;}
+    
+//  Serial.print(String("ADC: ") + adc);
+//  Serial.println(String(" VOL: ") + pers);
+  
+  Blynk.setProperty(V1,"onLabel",String(pers)+"%");
+  Blynk.setProperty(V1,"offLabel",String(pers)+"%");
+} 
