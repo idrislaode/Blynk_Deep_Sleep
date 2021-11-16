@@ -18,18 +18,24 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);  
   
-  WiFi.mode(WIFI_STA); 
-  Serial.println("Connect to " + String(ssid));
-  if (pass && strlen(pass)) { 
-    WiFi.begin(ssid, pass); 
-  } else {
-    WiFi.begin(ssid);
-  }
-  int tm = millis();
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(100);
-    if(millis() - tm > 4000){Serial.println("Time to Sleep"); ESP.deepSleep(30e6);}
-  } 
+//  WiFi.mode(WIFI_STA); 
+//  Serial.println("Connect to " + String(ssid));
+//  if (pass && strlen(pass)) { 
+//    WiFi.begin(ssid, pass); 
+//  } else {
+//    WiFi.begin(ssid);
+//  }
+//  delay(500);
+//  int tm = millis();
+//  while (WiFi.status() != WL_CONNECTED) {
+//    if (pass && strlen(pass)) { 
+//      WiFi.begin(ssid, pass); 
+//    } else {
+//      WiFi.begin(ssid);
+//    }
+//    delay(500);
+//    if(millis() - tm > 5000){Serial.println("Time to Sleep"); ESP.deepSleep(30e6);}
+//  } 
     
   Blynk.begin(auth, ssid, pass); 
 //  delay(200); 
@@ -45,10 +51,10 @@ void loop() {
   Blynk.run();
 
   SendBlynk();
-  delay(20); 
+  delay(200); 
   
 //  Serial.println("Enter Deep Sleep");
-  ESP.deepSleep(30e6); 
+  ESP.deepSleep(20e6); 
 //  Serial.println("Time to Wake Up");
 }
 
@@ -62,8 +68,8 @@ void SendBlynk(){
   if(pers<0){pers=0;}
   if(pers>100){pers=100;}
     
-//  Serial.print(String("ADC: ") + adc);
-//  Serial.println(String(" VOL: ") + pers);
+  Serial.print(String("ADC: ") + adc);
+  Serial.println(String(" VOL: ") + pers);
   
   Blynk.setProperty(V1,"onLabel",String(pers)+"%");
   Blynk.setProperty(V1,"offLabel",String(pers)+"%");
