@@ -16,11 +16,23 @@ char pass[] = "1010Kali";
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600); 
+  Serial.begin(9600);  
   
-  Blynk.begin(auth, ssid, pass);
-  delay(200);
-//  Blynk.begin(auth, ssid, pass, "blynk-cloud", 80);
+  WiFi.mode(WIFI_STA); 
+  Serial.println("Connect to " + String(ssid));
+  if (pass && strlen(pass)) { 
+    WiFi.begin(ssid, pass); 
+  } else {
+    WiFi.begin(ssid);
+  }
+  int tm = millis();
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(100);
+    if(millis() - tm > 4000){Serial.println("Time to Sleep"); ESP.deepSleep(30e6);}
+  } 
+    
+  Blynk.begin(auth, ssid, pass); 
+//  delay(200); 
 }
 
 void loop() {
@@ -42,8 +54,9 @@ void loop() {
 
 
 void SendBlynk(){
-  int tm = millis();
-  while(Blynk.connect()==0){if(millis() - tm > 3000){ESP.deepSleep(30e6); }}
+  int tm = millis(); 
+  
+//  while(Blynk.connect()==false){if(millis() - tm > 3000){ESP.deepSleep(30e6);}}
   int adc = analogRead(A0); 
   int pers = map(adc, 50, 700, 100, 0);
   if(pers<0){pers=0;}
